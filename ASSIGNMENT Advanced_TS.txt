@@ -1,0 +1,270 @@
+// ASSIGNMENT: Complete atleast 3 of the following tasks:
+
+
+// 1. Order System (TS Basics + Partial + Readonly)
+
+const defaultOrder = {
+  id: 0,
+  customer: "John",
+  items: [],
+  status: "pending"
+};
+
+function createOrder(customer, items) {
+  return { ...defaultOrder, id: Date.now(), customer, items };
+}
+
+function updateOrder(order, updates) {
+  return { ...order, ...updates };
+}
+
+function getOrderSummary(order) {
+  return `${order.customer} - ${order.status}: ${order.items.length} items`;
+}
+
+// Assignments:
+// Type all functions and objects.
+// Use Partial<> for updates and Readonly<> for summary input.
+
+
+
+///--------------------
+
+// 2. Library Inventory (Discriminated Union, Generics)
+
+const items = [
+  { type: 'book', title: "1984", author: "Orwell", pages: 300 },
+  { type: 'dvd', title: "Inception", director: "Nolan", duration: 120 }
+];
+
+function getItemDescription(item) {
+  if (item.type === 'book') {
+    return `${item.title} by ${item.author}`;
+  }
+  return `${item.title}, directed by ${item.director}`;
+}
+
+function filterByType(items, type) {
+  return items.filter(i => i.type === type);
+}
+
+// Assignments:
+// Type discriminated unions for item types.
+// Generic filterByType to return correct array type based on type.
+// Use a type-narrowing function or predicate.
+
+
+///-------------------------
+
+// 3. Payment API Response (Discriminated Unions, Type Guards)
+
+function requestPayment() {
+  if (Math.random() > 0.5) {
+    return { status: "ok", confirmation: "abc123" };
+  }
+  return { status: "error", error: "Insufficient funds" };
+}
+
+function handlePaymentResponse(res) {
+  if (res.status === "ok") {
+    return res.confirmation;
+  }
+  return res.error;
+}
+
+// Assignments:
+// Discriminated union on API response.
+// Use a custom type-guard if desired.
+// Type function inputs/outputs.
+
+///--------------------------
+
+// 4. Form Value Lookup (Generics, Utility Types, Overloading)
+
+const formValues = { name: "Ava", age: 33, active: true };
+
+function getValue(form, key) {
+  return form[key];
+}
+
+function mergeObjects(a, b) {
+  return { ...a, ...b };
+}
+
+// Assignments:
+// Generic-typesafe getValue (return type depends on key).
+// Overload mergeObjects to accept and type arrays as well.
+
+
+///---------------------------
+
+// 5. Job Queue (Function Overloading, Utility Types, Advanced Unions)
+const taskQueue = [];
+
+function addTask(task) {
+  taskQueue.push(task);
+}
+
+function runQueue() {
+  while(taskQueue.length) {
+    const task = taskQueue.shift();
+    if (typeof task === "function") {
+      task();
+    } else if (task && typeof task.run === "function") {
+      task.run();
+    }
+  }
+}
+
+addTask(() => console.log("Lambda"));
+addTask({ run: () => console.log("Obj task") });
+
+// Assignments:
+// Function overloads for addTask (function or {run: () => void}).
+// Properly type taskQueue.
+// (bonus) Use utility types to create a read-only view of the queue.
+
+///--------------------------------
+
+// 6: User Management (Basics, Utility Types)
+
+const users = [
+  { id: 1, name: "Alice", email: "alice@email.com", isAdmin: true },
+  { id: 2, name: "Bob", email: "bob@email.com", isAdmin: false }
+];
+
+function getUser(id) {
+  return users.find(u => u.id === id);
+}
+
+function updateUser(id, updates) {
+  const user = getUser(id);
+  if (user) {
+    Object.assign(user, updates);
+  }
+  return user;
+}
+
+function getAdminUsers() {
+  return users.filter(u => u.isAdmin);
+}
+
+// Assignment:
+// Type the objects, array, parameters, and return values.
+// Use Partial utility for updates.
+// Make getAdminUsers return a Readonly array of Users.
+
+///------------------------------------
+
+// 7: E-Commerce Inventory (Discriminated Unions, Type Guards, Generics)
+const products = [
+  { type: "book", title: "1984", author: "Orwell", pages: 300 },
+  { type: "gadget", title: "FitWatch", brand: "FitCo", warranty: true }
+];
+
+function getProductInfo(product) {
+  if (product.type === "book") {
+    return `${product.title} by ${product.author}, ${product.pages} pages.`;
+  } else if (product.type === "gadget") {
+    return `${product.title} by ${product.brand}, warranty: ${product.warranty ? "yes" : "no"}`;
+  }
+  return "";
+}
+
+function findProducts(type) {
+  return products.filter(p => p.type === type);
+}
+
+// Assignment:
+// Apply discriminated union types for products.
+// Write a type guard for checking if a product is a gadget.
+// Make findProducts generic so it returns the right array type for "book" or "gadget".
+
+///-----------------------------------
+// 8: API Response Handling (Discriminated Union, Type Predicates)
+
+function fetchApiResponse() {
+  // For demo, could be any of these:
+  return Math.random() > 0.5
+    ? { status: "ok", data: [1, 2, 3] }
+    : { status: "error", errorMsg: "Not found" };
+}
+
+function handleResponse(response) {
+  if (response.status === "ok") {
+    return response.data.length;
+  } else {
+    return response.errorMsg;
+  }
+}
+
+// Assignment:
+// Add discriminated union types for responses.
+// Type the return for each function.
+// Use a type predicate in handleResponse to check if it’s an "ok" response.
+
+///--------------------------------------
+
+// 9: Form Utilities (Generics, Function Overloading)
+function getValue(obj, key) {
+  return obj[key];
+}
+
+function mergeValues(a, b) {
+  return { ...a, ...b };
+}
+
+const userDetails = { name: "Bob", city: "Paris" };
+const extra = { age: 22 };
+
+// Assignment:
+// Make getValue generic so the key is type-checked and return type is inferred.
+// Overload mergeValues to combine objects and also to combine two arrays into one array.
+
+///--------------------------------------
+// Notification system for an app
+const levels = {
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error'
+};
+
+function createNotification(level, message, extra) {
+  return {
+    level: level,
+    message: message,
+    timestamp: Date.now(),
+    ...extra
+  };
+}
+
+function logNotification(notification) {
+  if (notification.level === levels.ERROR) {
+    console.error(`[ERROR] ${notification.message}`);
+  } else if (notification.level === levels.WARN) {
+    console.warn(`[WARN] ${notification.message}`);
+  } else {
+    console.log(`[INFO] ${notification.message}`);
+  }
+}
+
+function filterNotifications(notifications, level) {
+  return notifications.filter(n => n.level === level);
+}
+
+const allNotifications = [
+  createNotification('info', "Server started"),
+  createNotification('warn', "Memory is high"),
+  createNotification('error', "Crash detected", { code: 500 }),
+];
+
+// Assignment ideas:
+// Use an enum for levels, and proper interfaces/types for notification objects.
+// Ensure extra is strictly typed, or generic if you want to support custom payloads.
+// Log function should narrow correctly by notification level, and handle extra properties (like error code) using type narrowing or type predicates.
+// Make filterNotifications generic so it returns an array specifically typed for the chosen level.
+// Add types everywhere for function params/returns.
+
+
+
+ 
